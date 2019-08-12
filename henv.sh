@@ -34,11 +34,11 @@ function hh()
 
 ################################################################
 # hh-aenv - will init Android env in current session, using
-#           HH_ANDROID_INIT, which point to Android env script
+#           HH_ANDROID_ENV, which point to Android env script
 ################################################################
 function hh-aenv()
 {
-  source ${HH_ANDROID_INIT}
+  source ${HH_ANDROID_ENV}
 }
 
 ################################################################
@@ -134,7 +134,7 @@ function hh-make-update()
   echo "Before provisioning"
   PATH=$PATH:. ./mk_sdcard_image.sh -p . -d /tmp/test.img -c devel -r -v
   if [ ! -z ${HH_OUT_PRODUCT_IMAGE_COPY} ]; then
-    cp /tmp/test.img ${HH_OUT_PRODUCT_IMAGE_COPY}
+    sudo cp /tmp/test.img ${HH_OUT_PRODUCT_IMAGE_COPY}
   fi
   popd
 }
