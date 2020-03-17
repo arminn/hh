@@ -162,6 +162,22 @@ function hh-update()
   popd
 }
 
+function _get_board_ip()
+{
+  export BOARD_IP=`systemctl -n 1 status isc-dhcp-server | tail -n1 | awk ' {print $8} '`
+}
+
+# 3301965824 is a vendor offset
+# I.e. you need to check vendor MiB offset in mk_sdcard_image.sh
+# for the reference : xvda${DOMA_VENDOR_PARTITION_ID}    ext4 3149MiB  3418MiB
+# 3149MiB == 3301965824
+function hh-scp-vendor()
+{
+  _get_board_ip
+  ssh root@${BOARD_IP} "mkdir -p /home/root/vendor/ && ls -l && /sbin/losetup -o 3301965824 -f /dev/mmcblk0p3 && mount /dev/loop0 /home/root/vendor/"
+  scp -r ${ANDROID_PRODUCT_OUT}/vendor root@${BOARD_IP}:/home/root/
+  ssh root@${BOARD_IP} "sync && umount /dev/loop0 && /sbin/losetup -d /dev/loop0"
+}
 
 ################################################################
 # dhh-edit - used for development
