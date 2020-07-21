@@ -201,15 +201,14 @@ function hh-scp-kernel()
   mkdir -p ${TMP_IFS}
 
   _get_board_ip
-
-  ssh root@${BOARD_IP} "mkdir -p /home/root/ifs/ && mount /dev/mmcblk0p1 /home/root/ifs/"
+  ssh -oStrictHostKeyChecking=no root@${BOARD_IP} "mkdir -p /home/root/ifs/ && mount /dev/mmcblk0p1 /home/root/ifs/"
   scp root@${BOARD_IP}:/home/root/ifs/boot/uInitramfs ${TMP_IFS}/uInitramfs
 
 
   pushd ${TMP_IFS}
-  uirfs.sh unpack uInitramfs ./u
+  yes y | uirfs.sh unpack uInitramfs ./u
   cp ${KERNEL_PATH} ./u/xt/doma/Image
-  uirfs.sh pack uInitramfs ./u
+  yes y | uirfs.sh pack uInitramfs ./u
   popd
 
   scp ${TMP_IFS}/uInitramfs root@${BOARD_IP}:/home/root/ifs/boot/uInitramfs
@@ -217,6 +216,10 @@ function hh-scp-kernel()
 
 }
 
+
+################################################################
+# hh-update-all-android - update ONLY android(DomA) on emmc
+################################################################
 function hh-update-all-android()
 {
   _get_board_ip
